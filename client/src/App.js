@@ -8,19 +8,18 @@ class App extends Component {
     data: [],
     type: '',
     label: '',
-    // id: '',
-    // icon: '',
-    // options: ''
+    icon: '',
   }
 
   componentDidMount() {
     axios.get('http://localhost:3001/fields').then(resp => {  
-      console.log(resp.data)
+      console.table(resp.data)
 
       this.setState({
         data: resp.data,
         type: resp.data.type,
-        label: resp.data.label
+        label: resp.data.label,
+        icon: resp.data.icon
       })
     })
   }
@@ -35,17 +34,27 @@ class App extends Component {
           
           <form className="form-area">
             {this.state.data.map(data => (
-              // if text, else if select, else textarea
+              // if 'text', else if 'select', else 'textarea'
               data.type === 'text' | data.type === 'email' | data.type === 'tel' ? 
-                <input key={data.id} type={data.type} placeholder={data.label}/>
+                <div className="input-box">
+                  <i className={`fa ${data.icon}`}></i>
+                  <input key={data.id} type={data.type} placeholder={data.label}/>
+                </div>
                 : data.type === 'select' ? 
-                  <select key={data.id} id={data.id}>
-                    <option>{data.label}</option>
-                    {data.options.map(opt => (
-                      <option key={opt.id} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                : <textarea key={data.id} placeholder={data.label}></textarea>
+                  <div key={data.id}>
+                    <i className={`fa ${data.icon}`}></i>
+                    <select key={data.id} id={data.id}>
+                      <option>{data.label}</option> 
+                      {data.options.map(opt => (
+                        <option key={opt.id} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                :
+                <div>
+                  <i className={`fa ${data.icon}`}></i>
+                  <textarea key={data.id} placeholder={data.label}></textarea>
+                </div>
             ))}
           </form>
 
